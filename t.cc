@@ -16,6 +16,10 @@ int main(int argc, const char* argv[])
   UtilTestSuite gts;
   gts.run(output);
 
+  GraphTestSuite ts;
+  ts.run(output);
+  return 0;
+
     if (argc < 3) {
         cerr << "Usage: " << argv[0] << " w1 w2\n";
         return -1;

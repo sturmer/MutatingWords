@@ -41,6 +41,8 @@ string parseLine<string>(const string& line)
     return line;
 }
 
+class GraphTestSuite;
+
 template <typename T>
 class Graph {
   unordered_map<T, vector<T>> adjlist;
@@ -60,7 +62,67 @@ public:
 
   unordered_map<T, int> dist;
   unordered_map<T, T> parent;
+  friend class GraphTestSuite;
 };
+
+class GraphTestSuite : public Test::Suite
+{
+public: GraphTestSuite()
+  {
+    TEST_ADD(GraphTestSuite::test_AddNode);
+    TEST_ADD(GraphTestSuite::test_Dijkstra);
+  }
+protected:
+  virtual void setup();
+  virtual void tear_down();
+private:
+  void test_AddNode();
+  void test_Dijkstra();
+  Graph<string>* g;
+};
+
+void GraphTestSuite::setup()
+{
+  g = new Graph<string>("t/test1.txt");
+}
+
+void GraphTestSuite::tear_down()
+{
+  delete g;
+}
+
+void GraphTestSuite::test_AddNode()
+{
+  string s1("Arton");
+  g->AddNode(s1);
+  TEST_ASSERT(std::find(g->adjlist["Acton"].begin(), g->adjlist["Acton"].end(), s1) !=
+	      g->adjlist["Acton"].end());
+  string s2("Norton");
+  g->AddNode(s2);
+  TEST_ASSERT(std::find(g->adjlist["Acton"].begin(), g->adjlist["Acton"].end(), s2) ==
+	      g->adjlist["Acton"].end());
+}
+
+void GraphTestSuite::test_Dijkstra()
+{
+  string s("Acton");
+  g->Dijkstra(s);
+  TEST_ASSERT(g->dist["Accra"] == Infinity);
+
+  Graph<string> g2("t/test2.txt");
+  g2.Dijkstra("rice");  // rice is in the file
+  // string p(g2.parent["typo"]);
+  // cout << "typo <- ";
+  // while (p != "nil") {
+  //   cout << p << " <- ";
+  //   p = g2.parent[p];
+  // }
+  // cout << "rice\n";
+
+  TEST_ASSERT(g2.dist["typo"] == 7);
+  g2.Dijkstra("typo");
+  TEST_ASSERT(g2.dist["rice"] == 7);
+}
 
 template <typename T>
 int Graph<T>::GetDistance(const T& a, const T& b)
