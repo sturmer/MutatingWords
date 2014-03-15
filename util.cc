@@ -57,7 +57,7 @@ void printHistogram(const string& filename)
     }
 }
 
-int getHummingDistance(const string& s1, const string& s2)
+int getHammingDistance(const string& s1, const string& s2)
 {
     if (s1.size() != s2.size()) {
         return Infinity;
@@ -71,11 +71,11 @@ int getHummingDistance(const string& s1, const string& s2)
     return distance;
 }
 
-void UtilTestSuite::test_get_humming_distance()
+void UtilTestSuite::test_get_hamming_distance()
 {
-  TEST_ASSERT(getHummingDistance("wind", "wand") == 1);
-  TEST_ASSERT(getHummingDistance("wind", "wane") == 2);
-  TEST_ASSERT(getHummingDistance("wind", "list") == 3);
-  TEST_ASSERT(getHummingDistance("wind", "crow") == 4);
-  TEST_ASSERT(getHummingDistance("wind", "winds") == Infinity);
+  TEST_ASSERT(getHammingDistance("wind", "wand") == 1);
+  TEST_ASSERT(getHammingDistance("wind", "wane") == 2);
+  TEST_ASSERT(getHammingDistance("wind", "list") == 3);
+  TEST_ASSERT(getHammingDistance("wind", "crow") == 4);
+  TEST_ASSERT(getHammingDistance("wind", "winds") == Infinity);
 }
