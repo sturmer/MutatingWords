@@ -83,7 +83,7 @@ private:
 
 void GraphTestSuite::setup()
 {
-  g = new Graph<string>("t/test1.txt");
+  g = new Graph<string>("t/test2.txt");
 }
 
 void GraphTestSuite::tear_down()
@@ -93,35 +93,24 @@ void GraphTestSuite::tear_down()
 
 void GraphTestSuite::test_AddNode()
 {
-  string s1("Arton");
+  string s1("file");
   g->AddNode(s1);
-  TEST_ASSERT(std::find(g->adjlist["Acton"].begin(), g->adjlist["Acton"].end(), s1) !=
-	      g->adjlist["Acton"].end());
-  string s2("Norton");
+  TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
+			g->adjlist["mile"].end(), s1) !=
+	      g->adjlist["mile"].end());
+  string s2("five");
   g->AddNode(s2);
-  TEST_ASSERT(std::find(g->adjlist["Acton"].begin(), g->adjlist["Acton"].end(), s2) ==
-	      g->adjlist["Acton"].end());
+  TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
+			g->adjlist["mile"].end(), s2) ==
+	      g->adjlist["mile"].end());
 }
 
 void GraphTestSuite::test_Dijkstra()
 {
-  string s("Acton");
-  g->Dijkstra(s);
-  TEST_ASSERT(g->dist["Accra"] == Infinity);
-
-  Graph<string> g2("t/test2.txt");
-  g2.Dijkstra("rice");  // rice is in the file
-  // string p(g2.parent["typo"]);
-  // cout << "typo <- ";
-  // while (p != "nil") {
-  //   cout << p << " <- ";
-  //   p = g2.parent[p];
-  // }
-  // cout << "rice\n";
-
-  TEST_ASSERT(g2.dist["typo"] == 7);
-  g2.Dijkstra("typo");
-  TEST_ASSERT(g2.dist["rice"] == 7);
+  g->Dijkstra("rice");  // rice is in the file
+  TEST_ASSERT(g->dist["typo"] == 7);
+  g->Dijkstra("typo");
+  TEST_ASSERT(g->dist["rice"] == 7);
 }
 
 template <typename T>
@@ -156,7 +145,7 @@ void Graph<T>::AddNode(const T& s)
   }
   
   for (auto node: adjlist) {
-    if (getHummingDistance(node.first, s) == 1) {
+    if (getHammingDistance(node.first, s) == 1) {
       adjlist[node.first].push_back(s);
       adjlist[s].push_back(node.first);
       ++num_edges;
