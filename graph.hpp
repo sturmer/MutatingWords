@@ -248,16 +248,20 @@ void Graph<T>::Dijkstra(const T& start)
     vector<T> q = nodes;
     SortByDistance<T> sbd(this);
     while (!q.empty()) {
-      typename vector<T>::iterator vptr =
+      //cout << "Dist: " << dist << "; ";
+      cout << "Q: " << q << '\n';
+      auto uptr =
 	min_element(q.begin(), q.end(), sbd);
-      q.erase(vptr);
-      T v = *vptr;      // check pointer?
-      for (auto edge: adjlist[v]) {
-	if (dist[v] + 1 < dist[edge]) {
-	  dist[edge] = dist[v] + 1;
-	  parent[edge] = v;
-	  cout << "Reach " << edge << " through " << v << " in " <<
-	    (dist[v]+1) << " steps\n";
+
+      q.erase(uptr);
+      T u = *uptr;      // check pointer?
+      cout << "Min is: " << u << " with distance " << dist[u] << " at pos " << (uptr - q.begin()) << '\n';
+      for (auto v: adjlist[u]) {
+	if (dist[v] > 1 + dist[u]) {
+	  dist[v] = dist[u] + 1;
+	  parent[v] = u;
+	  cout << "Reach " << v << " through " << u << " in " <<
+	    (dist[u]+1) << " steps\n";
 	}
       }
     }
