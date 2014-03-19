@@ -93,24 +93,60 @@ void GraphTestSuite::tear_down()
 
 void GraphTestSuite::test_AddNode()
 {
+  TEST_ASSERT(g->adjlist["typo"].size() == 1 && g->adjlist["typo"][0] == "type");
+  TEST_ASSERT(g->adjlist["type"].size() == 2);
+  TEST_ASSERT(g->adjlist["tape"].size() == 2);
+  TEST_ASSERT(g->adjlist["tale"].size() == 2);
+  TEST_ASSERT(g->adjlist["male"].size() == 2);
+  TEST_ASSERT(g->adjlist["mile"].size() == 4);
+  TEST_ASSERT(g->adjlist["milk"].size() == 2);
+  TEST_ASSERT(g->adjlist["silk"].size() == 2);
+  TEST_ASSERT(g->adjlist["sick"].size() == 3);
+  TEST_ASSERT(g->adjlist["tick"].size() == 2);
+  TEST_ASSERT(g->adjlist["lick"].size() == 3);
+  TEST_ASSERT(g->adjlist["link"].size() == 2);
+  TEST_ASSERT(g->adjlist["line"].size() == 2);
+  TEST_ASSERT(g->adjlist["mine"].size() == 3);
+  TEST_ASSERT(g->adjlist["mice"].size() == 3);
+  TEST_ASSERT(g->adjlist["rice"].size() == 1 && g->adjlist["rice"][0] == "mice");
+
   string s1("file");
   g->AddNode(s1);
+  TEST_ASSERT(g->adjlist["mile"].size() == 5);
   TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
 			g->adjlist["mile"].end(), s1) !=
 	      g->adjlist["mile"].end());
+  TEST_ASSERT(g->adjlist["file"].size() == 1 && g->adjlist["file"][0] == "mile");
   string s2("five");
   g->AddNode(s2);
   TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
 			g->adjlist["mile"].end(), s2) ==
 	      g->adjlist["mile"].end());
+  TEST_ASSERT(g->adjlist["five"].size() == 1 && g->adjlist["five"][0] == "file");
+  TEST_ASSERT(g->adjlist["file"].size() == 2);
 }
 
 void GraphTestSuite::test_Dijkstra()
 {
-  g->Dijkstra("rice");  // rice is in the file
-  TEST_ASSERT(g->dist["typo"] == 7);
+  // "five" and "file" are not in the graph, so setup is called
+  // again at the beginning of this function?
+  TEST_ASSERT(g->GetNumNodes() == 16);
+  // g->Dijkstra("rice");  // rice is in the file
+  // TEST_ASSERT(g->dist["typo"] == 7);
+  // TEST_ASSERT(std::find(g->adjlist["rice"].begin(),
+  // 			g->adjlist["rice"].end(),
+  // 			"typo") == g->adjlist["rice"].end());
+  // TEST_ASSERT(std::find(g->adjlist["rice"].begin(),
+  // 			g->adjlist["rice"].end(),
+  // 			"mice") != g->adjlist["rice"].end());
   g->Dijkstra("typo");
   TEST_ASSERT(g->dist["rice"] == 7);
+  TEST_ASSERT(std::find(g->adjlist["typo"].begin(),
+			g->adjlist["typo"].end(),
+			"rice") == g->adjlist["typo"].end());
+  TEST_ASSERT(std::find(g->adjlist["typo"].begin(),
+			g->adjlist["typo"].end(),
+			"type") != g->adjlist["typo"].end());
 }
 
 template <typename T>
