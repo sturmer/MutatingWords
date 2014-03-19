@@ -217,14 +217,14 @@ void Graph<T>::Print(const string& out_file) const
 template <typename T>
 class SortByDistance {
 public:
-  SortByDistance(const Graph<T>& g) : g_(g) {}
+  SortByDistance(Graph<T>* g) : g_(g) {}
   bool operator()(const T& t1, const T& t2)
   {
-    return g_.dist[t1] < g_.dist[t2];
+    return g_->dist[t1] < g_->dist[t2];
   }
       
 private:
-  Graph<T> g_;
+  Graph<T>* g_;
 };
 
 template <typename T>
@@ -246,7 +246,7 @@ void Graph<T>::Dijkstra(const T& start)
     }
 
     vector<T> q = nodes;
-    SortByDistance<T> sbd(*this);
+    SortByDistance<T> sbd(this);
     while (!q.empty()) {
       typename vector<T>::iterator vptr =
 	min_element(q.begin(), q.end(), sbd);
