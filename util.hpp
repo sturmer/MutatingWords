@@ -1,7 +1,7 @@
 #ifndef UTIL_HPP
 #define UTIL_HPP
 
-#include <cpptest.h>
+#include <gtest/gtest.h>
 
 #include <string>
 #include <limits>
@@ -17,16 +17,5 @@ void buildList(const string& filename, const size_t i);
 void printHistogram(const string& filename);
 
 int getHammingDistance(const string& s1, const string& s2);
-
-class UtilTestSuite : public Test::Suite
-{
-public:
-  UtilTestSuite()
-  {
-    TEST_ADD(UtilTestSuite::test_get_hamming_distance);
-  }
-private:
-  void test_get_hamming_distance();
-};
 
 #endif

@@ -71,11 +71,11 @@ int getHammingDistance(const string& s1, const string& s2)
     return distance;
 }
 
-void UtilTestSuite::test_get_hamming_distance()
+TEST(UtilTestSuite, TestGetHammingDistance)
 {
-  TEST_ASSERT(getHammingDistance("wind", "wand") == 1);
-  TEST_ASSERT(getHammingDistance("wind", "wane") == 2);
-  TEST_ASSERT(getHammingDistance("wind", "list") == 3);
-  TEST_ASSERT(getHammingDistance("wind", "crow") == 4);
-  TEST_ASSERT(getHammingDistance("wind", "winds") == Infinity);
+  EXPECT_EQ(getHammingDistance("wind", "wand"), 1);
+  EXPECT_EQ(getHammingDistance("wind", "wane"), 2);
+  EXPECT_EQ(getHammingDistance("wind", "list"), 3);
+  EXPECT_EQ(getHammingDistance("wind", "crow"), 4);
+  EXPECT_EQ(getHammingDistance("wind", "winds"), Infinity);
 }

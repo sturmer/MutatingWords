@@ -1,2 +1,2 @@
 #!/bin/bash
-clang++ -g -std=c++11 util.cc t.cc -Wall -Werror -lcpptest
+clang++ -g -std=c++11 -Wall -Werror util.cc t.cc -lgtest -lpthread

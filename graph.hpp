@@ -4,7 +4,7 @@
 #include "prettyprint.hpp"
 #include "util.hpp"
 
-#include <cpptest.h>
+#include <gtest/gtest.h>
 
 #include <iterator>
 #include <set>
@@ -51,6 +51,9 @@ class Graph {
   int num_edges;
   
 public:
+  friend class GraphTestSuite;
+  FRIEND_TEST(GraphTestSuite, TestAddNode);
+  FRIEND_TEST(GraphTestSuite, TestDijkstra);
   Graph(const string& filename);
   void AddNode(const T& n);
   void Dijkstra(const T& start);
@@ -62,75 +65,70 @@ public:
 
   unordered_map<T, int> dist;
   unordered_map<T, T> parent;
-  friend class GraphTestSuite;
 };
 
-class GraphTestSuite : public Test::Suite
+class GraphTestSuite : public ::testing::Test
 {
-public: GraphTestSuite()
-  {
-    TEST_ADD(GraphTestSuite::test_AddNode);
-    TEST_ADD(GraphTestSuite::test_Dijkstra);
-  }
 protected:
-  virtual void setup();
-  virtual void tear_down();
-private:
-  void test_AddNode();
-  void test_Dijkstra();
+  virtual void SetUp();
+  virtual void TearDown();
   Graph<string>* g;
 };
 
-void GraphTestSuite::setup()
+void GraphTestSuite::SetUp()
 {
   g = new Graph<string>("t/test2.txt");
 }
 
-void GraphTestSuite::tear_down()
+void GraphTestSuite::TearDown()
 {
   delete g;
 }
 
-void GraphTestSuite::test_AddNode()
+TEST_F(GraphTestSuite, TestAddNode)
 {
-  TEST_ASSERT(g->adjlist["typo"].size() == 1 && g->adjlist["typo"][0] == "type");
-  TEST_ASSERT(g->adjlist["type"].size() == 2);
-  TEST_ASSERT(g->adjlist["tape"].size() == 2);
-  TEST_ASSERT(g->adjlist["tale"].size() == 2);
-  TEST_ASSERT(g->adjlist["male"].size() == 2);
-  TEST_ASSERT(g->adjlist["mile"].size() == 4);
-  TEST_ASSERT(g->adjlist["milk"].size() == 2);
-  TEST_ASSERT(g->adjlist["silk"].size() == 2);
-  TEST_ASSERT(g->adjlist["sick"].size() == 3);
-  TEST_ASSERT(g->adjlist["tick"].size() == 2);
-  TEST_ASSERT(g->adjlist["lick"].size() == 3);
-  TEST_ASSERT(g->adjlist["link"].size() == 2);
-  TEST_ASSERT(g->adjlist["line"].size() == 2);
-  TEST_ASSERT(g->adjlist["mine"].size() == 3);
-  TEST_ASSERT(g->adjlist["mice"].size() == 3);
-  TEST_ASSERT(g->adjlist["rice"].size() == 1 && g->adjlist["rice"][0] == "mice");
+  EXPECT_EQ(g->adjlist["typo"].size(), 1);
+  EXPECT_STREQ(g->adjlist["typo"][0].c_str(), "type");
+  EXPECT_EQ(g->adjlist["type"].size(), 2);
+  EXPECT_EQ(g->adjlist["tape"].size(), 2);
+  EXPECT_EQ(g->adjlist["tale"].size(), 2);
+  EXPECT_EQ(g->adjlist["male"].size(), 2);
+  EXPECT_EQ(g->adjlist["mile"].size(), 4);
+  EXPECT_EQ(g->adjlist["milk"].size(), 2);
+  EXPECT_EQ(g->adjlist["silk"].size(), 2);
+  EXPECT_EQ(g->adjlist["sick"].size(), 3);
+  EXPECT_EQ(g->adjlist["tick"].size(), 2);
+  EXPECT_EQ(g->adjlist["lick"].size(), 3);
+  EXPECT_EQ(g->adjlist["link"].size(), 2);
+  EXPECT_EQ(g->adjlist["line"].size(), 2);
+  EXPECT_EQ(g->adjlist["mine"].size(), 3);
+  EXPECT_EQ(g->adjlist["mice"].size(), 3);
+  EXPECT_EQ(g->adjlist["rice"].size(), 1);
+  EXPECT_EQ(g->adjlist["rice"][0], "mice");
 
   string s1("file");
   g->AddNode(s1);
-  TEST_ASSERT(g->adjlist["mile"].size() == 5);
-  TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
+  EXPECT_EQ(g->adjlist["mile"].size(), 5);
+  EXPECT_TRUE(std::find(g->adjlist["mile"].begin(),
 			g->adjlist["mile"].end(), s1) !=
 	      g->adjlist["mile"].end());
-  TEST_ASSERT(g->adjlist["file"].size() == 1 && g->adjlist["file"][0] == "mile");
+  EXPECT_EQ(g->adjlist["file"].size(), 1);
+  EXPECT_EQ(g->adjlist["file"][0], "mile");
   string s2("five");
   g->AddNode(s2);
-  TEST_ASSERT(std::find(g->adjlist["mile"].begin(),
+  EXPECT_TRUE(std::find(g->adjlist["mile"].begin(),
 			g->adjlist["mile"].end(), s2) ==
 	      g->adjlist["mile"].end());
-  TEST_ASSERT(g->adjlist["five"].size() == 1 && g->adjlist["five"][0] == "file");
-  TEST_ASSERT(g->adjlist["file"].size() == 2);
+  EXPECT_EQ(g->adjlist["five"].size(), 1);
+  EXPECT_EQ(g->adjlist["five"][0], "file");
+  EXPECT_EQ(g->adjlist["file"].size(), 2);
 }
 
-void GraphTestSuite::test_Dijkstra()
+TEST_F(GraphTestSuite, TestDijkstra)
 {
   // "five" and "file" are not in the graph, so setup is called
   // again at the beginning of this function?
-  TEST_ASSERT(g->GetNumNodes() == 16);
+  EXPECT_EQ(g->GetNumNodes(), 16);
   // g->Dijkstra("rice");  // rice is in the file
   // TEST_ASSERT(g->dist["typo"] == 7);
   // TEST_ASSERT(std::find(g->adjlist["rice"].begin(),
@@ -140,11 +138,11 @@ void GraphTestSuite::test_Dijkstra()
   // 			g->adjlist["rice"].end(),
   // 			"mice") != g->adjlist["rice"].end());
   g->Dijkstra("typo");
-  TEST_ASSERT(g->dist["rice"] == 7);
-  TEST_ASSERT(std::find(g->adjlist["typo"].begin(),
+  EXPECT_EQ(g->dist["rice"], 7);
+  EXPECT_TRUE(std::find(g->adjlist["typo"].begin(),
 			g->adjlist["typo"].end(),
 			"rice") == g->adjlist["typo"].end());
-  TEST_ASSERT(std::find(g->adjlist["typo"].begin(),
+  EXPECT_TRUE(std::find(g->adjlist["typo"].begin(),
 			g->adjlist["typo"].end(),
 			"type") != g->adjlist["typo"].end());
 }
